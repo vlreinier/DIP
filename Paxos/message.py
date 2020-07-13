@@ -11,7 +11,8 @@ class Message(object):
                 "SUCCES",
                 "PREDICTED"]
 
-    def __init__(self, src, dst, msg_type, n=None, v=None, prior=None):
+    def __init__(self, src, dst, msg_type, n=None, value=None, prior=None):
         self.src = src
         self.dst = dst
         self.msg_type = msg_type
+        self.value = value

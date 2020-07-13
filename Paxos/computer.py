@@ -4,8 +4,8 @@ class Computer(object):
         self.failed = failed
         self.network = network
 
-    def deliver_msg(self):
-        ...
+    def deliver_msg(self, msg):
+        print(msg)
 
 
 class Proposer(Computer):

@@ -7,9 +7,10 @@ class Simulation(object):
 
     def __init__(self, input):
         self.network = Network()
-        self.n_P, self.n_A, self.tickmax, self.E = self.read_input(input)
+        self.n_P, self.n_A, self.tickmax, events = self.read_input(input)
         self.P = [Proposer(i + 1, self.network) for i in range(self.n_P)]
         self.A = [Acceptor(i + 1, self.network) for i in range(self.n_A)]
+        self.E = self.parse_events(events)
 
     def run(self):
 
@@ -19,6 +20,8 @@ class Simulation(object):
 
         # simulation
         for tick in range(self.tickmax):
+
+            print(event_incrementer, len(self.E))
             
             # simulation ended
             if len(self.network.queue) == 0 and (event_incrementer >= len(self.E)):
@@ -58,26 +61,37 @@ class Simulation(object):
         proposers = int(parsed_input[0][0])
         acceptors = int(parsed_input[0][1])
         tickmax = int(parsed_input[0][2])
+        events = parsed_input[1:-1]
 
-        events = self.parse_events(parsed_input[1:-1])
         return proposers, acceptors, tickmax, events
 
     def parse_events(self, events):
+        
         parsed = []
+
         for e in events:
             tick = int(e[0])
             F, R = [], []
             pi_v, pi_c = None, None
 
             if e[1] == 'PROPOSE':
-                pi_c = e[2]
+                pi_c = self.P[int(e[2]) - 1]
                 pi_v = e[3]
 
-            elif e[1] in ['FAIL', 'RECOVER']:
+            elif e[1] == 'FAIL':
                 if e[2] == 'PROPOSER':
-                    c = e[3]
+                    F.append(self.P[int(e[3]) - 1])
                 elif e[2] == 'ACCEPTOR':
-                    c = e[3]
+                    F.append(self.A[int(e[3]) - 1])
+                else:
+                    print("Unvalid target type was found in input")
+                    sys.exit(0)
+
+            elif e[1] == 'RECOVER':
+                if e[2] == 'PROPOSER':
+                    R.append(self.P[int(e[3]) - 1])
+                elif e[2] == 'ACCEPTOR':
+                    R.append(self.A[int(e[3]) - 1])
                 else:
                     print("Unvalid target type was found in input")
                     sys.exit(0)
