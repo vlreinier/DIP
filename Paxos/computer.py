@@ -1,21 +1,19 @@
-class Computer(object):
-    def __init__(self, id, network, failed=False):
+class Proposer():
+    
+    def __init__(self, id, network):
         self.id = id
-        self.failed = failed
         self.network = network
+        self.failed = False
 
-    def deliver_msg(self, msg):
-        ...
-
-    def __str__(self):
-        return f"{self.id}"
-
-class Proposer(Computer):
-    ...
     def __str__(self):
         return f"P{self.id}"
 
-class Acceptor(Computer):
-    ...
+class Acceptor():
+
+    def __init__(self, id, network):
+        self.id = id
+        self.network = network
+        self.failed = False
+
     def __str__(self):
         return f"A{self.id}"

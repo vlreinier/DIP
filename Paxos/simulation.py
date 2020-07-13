@@ -3,7 +3,7 @@ from computer import Proposer, Acceptor
 from message import Message
 import sys
 
-class Simulation(object):
+class Simulation():
 
     def __init__(self, input):
         self.network = Network()
@@ -20,7 +20,7 @@ class Simulation(object):
             
             # simulation ended
             if len(self.network.queue) == 0 and (event_incrementer >= len(self.E)):
-                # consensus print
+                print("consensus")
                 sys.exit(0)
 
             # event tick is equal to current tick
@@ -41,6 +41,7 @@ class Simulation(object):
                 if pi_v != None and pi_c != None:
                     msg = Message(None, pi_c, "PROPOSE", pi_v)
                     msg.dst.deliver_msg(msg)
+                    print(f"{tick}:  -> {pi_c} PROPOSE {msg}")
 
                 # get next event
                 event_incrementer += 1
@@ -49,6 +50,9 @@ class Simulation(object):
                 msg = self.network.get_msg()
                 if msg != None:
                     msg.dst.deliver_msg(msg)
+                    print(f"{tick}: {msg.src} -> {msg.dst} {msg}")
+                else:
+                    print(f"{tick}:")
 
     def read_input(self, input):
         reader = open(input, "r")
@@ -65,8 +69,8 @@ class Simulation(object):
     def parse_events(self, events):
 
         parsed = []
-
         for e in events:
+
             tick = int(e[0])
             F, R = [], []
             pi_v, pi_c = None, None
