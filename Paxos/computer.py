@@ -1,10 +1,12 @@
 class Computer(object):
-    def __init__(self, number, network, failed=False):
-        self.number = number
+    def __init__(self, id, network, failed=False):
+        self.id = id
         self.failed = failed
         self.network = network
-        self.acceptors = []
-        self.proposers = []
+
+    def deliver_msg(self):
+        ...
+
 
 class Proposer(Computer):
     ...
