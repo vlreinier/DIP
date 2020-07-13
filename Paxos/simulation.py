@@ -14,14 +14,9 @@ class Simulation(object):
 
     def run(self):
 
-        # first event
-        event_incrementer = 0
-        t_event, F, R, pi_v, pi_c = self.E[event_incrementer]
-
         # simulation
+        event_incrementer = 0
         for tick in range(self.tickmax):
-
-            print(event_incrementer, len(self.E))
             
             # simulation ended
             if len(self.network.queue) == 0 and (event_incrementer >= len(self.E)):
@@ -29,14 +24,17 @@ class Simulation(object):
                 sys.exit(0)
 
             # event tick is equal to current tick
+            t_event, F, R, pi_v, pi_c = self.E[event_incrementer]
             if t_event == tick:
 
                 # fail computers
                 for c in F:
+                    print(f"{tick}: ** {c} kapot **")
                     c.failed = True
 
                 # recover computers
                 for c in R:
+                    print(f"{tick}: ** {c} gerepareerd **")
                     c.failed = False
                 
                 # propose message
@@ -46,7 +44,6 @@ class Simulation(object):
 
                 # get next event
                 event_incrementer += 1
-                t_event, F, R, pi_v, pi_c = self.E[event_incrementer]
             
             else:
                 msg = self.network.get_msg()
@@ -66,7 +63,7 @@ class Simulation(object):
         return proposers, acceptors, tickmax, events
 
     def parse_events(self, events):
-        
+
         parsed = []
 
         for e in events:
