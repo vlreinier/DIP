@@ -47,7 +47,7 @@ class Simulation():
                 
                 # propose message to provided machine
                 if pi_v != None and pi_c != None:
-                    msg = Message(None, pi_c, "PROPOSE", pi_v)
+                    msg = Message(None, pi_c, "PROPOSE", value=pi_v, n=None)
                     msg.dst.deliver_msg(msg)
                     print(f"{tick}:  -> {pi_c} {msg}")
 
@@ -71,7 +71,7 @@ class Simulation():
             proposers = int(parsed_input[0][0])
             acceptors = int(parsed_input[0][1])
             tickmax = int(parsed_input[0][2])
-            events = parsed_input[1:-1] # except end
+            events = parsed_input[1:-1] # except first and last
 
             return proposers, acceptors, tickmax, events
 

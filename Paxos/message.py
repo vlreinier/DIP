@@ -1,19 +1,11 @@
 import sys
+from attributes import GlobalVariables
 
 class Message():
 
-    msg_types = ["PROPOSE",
-                "PREPARE",
-                "PROMISE",
-                "ACCEPT",
-                "ACCEPTED",
-                "REJECTED",
-                "SUCCES",
-                "PREDICTED"]
+    def __init__(self, src, dst, mtype, value=None, n=None):
 
-    def __init__(self, src, dst, mtype, value=None, n=None, prior=None):
-
-        if not mtype in msg_types:
+        if not mtype in GlobalVariables.msg_types:
             print("Invalid msg type")
             sys.exit(0)
 
@@ -22,7 +14,6 @@ class Message():
         self.mtype = mtype
         self.value = value
         self.n = n
-        self.prior = prior
 
     def __str__(self):
         
