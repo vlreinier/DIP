@@ -32,7 +32,7 @@ class Message():
 
         elif self.mtype == "PROMISE":
             if self.prior:
-                return f"{self.mtype} (Prior: n={self.prior[0]}, v={self.prior[1]})"
+                return f"{self.mtype} n={self.n} (Prior: n={self.prior[0]}, v={self.prior[1]})"
             else:
-                return f"{self.mtype} (Prior: None)"
+                return f"{self.mtype} n={self.n} (Prior: None)"
 
