@@ -9,7 +9,7 @@ class Network():
 
     def get_msg(self):
         for msg in self.queue:
-            if not msg.source.failed and not msg.destination.failed:
+            if not msg.src.failed and not msg.dst.failed:
                 return self.queue.pop(self.queue.index(msg))
         return None
 
