@@ -45,7 +45,7 @@ class Simulation():
                     print(f"{tick}: ** {c} gerepareerd **")
                     c.failed = False
                 
-                # propose message
+                # propose message to provided machine
                 if pi_v != None and pi_c != None:
                     msg = Message(None, pi_c, "PROPOSE", pi_v)
                     msg.dst.deliver_msg(msg)
@@ -63,16 +63,21 @@ class Simulation():
                     print(f"{tick}:")
 
     def read_input(self, input):
-        reader = open(input, "r")
-        str_input = reader.readlines()
-        parsed_input = [i.strip("\n").split(" ") for i in str_input]
+        try:
+            reader = open(input, "r")
+            str_input = reader.readlines()
+            parsed_input = [i.strip("\n").split(" ") for i in str_input]
 
-        proposers = int(parsed_input[0][0])
-        acceptors = int(parsed_input[0][1])
-        tickmax = int(parsed_input[0][2])
-        events = parsed_input[1:-1]
+            proposers = int(parsed_input[0][0])
+            acceptors = int(parsed_input[0][1])
+            tickmax = int(parsed_input[0][2])
+            events = parsed_input[1:-1] # except end
 
-        return proposers, acceptors, tickmax, events
+            return proposers, acceptors, tickmax, events
+
+        except:
+            print("Input file could not be read")
+            sys.exit(0)
 
     def parse_events(self, events):
 

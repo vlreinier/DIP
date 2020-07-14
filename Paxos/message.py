@@ -12,6 +12,11 @@ class Message():
                 "PREDICTED"]
 
     def __init__(self, src, dst, mtype, value=None, n=None, prior=None):
+
+        if not mtype in msg_types:
+            print("Invalid msg type")
+            sys.exit(0)
+
         self.src = src
         self.dst = dst
         self.mtype = mtype
@@ -31,8 +36,12 @@ class Message():
             return f"{self.mtype} n={self.n} v={self.value}"
 
         elif self.mtype == "PROMISE":
-            if self.prior:
+            if self.prior != None:
                 return f"{self.mtype} n={self.n} (Prior: n={self.prior[0]}, v={self.prior[1]})"
             else:
                 return f"{self.mtype} n={self.n} (Prior: None)"
+                
+        else:
+            print("Invalid msg type")
+            sys.exit(0)
 
