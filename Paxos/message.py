@@ -27,7 +27,7 @@ class Message():
             return f"{self.mtype} n={self.n} v={self.value}"
 
         elif self.mtype == "PROMISE":
-            prior = f"n={self.n}, v={self.value}" if self.src.minProposal != 0 else "None"
+            prior = f"n={self.n}, v={self.value}" if self.src.minProposal != None else "None"
             return f"{self.mtype} n={self.src.minProposal} (Prior: {prior})"
                 
         else:

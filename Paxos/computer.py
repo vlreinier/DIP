@@ -20,14 +20,13 @@ class Proposer():
                 GlobalVariables.network.add_msg(msg)
 
         elif msg.mtype == "PROMISE":
-            if msg.src.acceptedValue != None:
-                for acceptor in GlobalVariables.acceptors:
-                    msg = Message(self, acceptor, "ACCEPT", value=self.proposed_value, n=msg.n)
-                    GlobalVariables.network.add_msg(msg)
+            msg = Message(self, msg.src, "ACCEPT", value=self.proposed_value, n=msg.src.minProposal)
+            GlobalVariables.network.add_msg(msg)
 
         elif msg.mtype == "ACCEPTED":
             self.accepted += 1
             if self.accepted > (GlobalVariables.n_acceptors // 2): # majority accepted and consensus is true
+                self.accepted_value = self.proposed_value
                 self.has_consensus = True
 
         elif msg.mtype == "REJECTED":
@@ -46,7 +45,6 @@ class Acceptor():
     def __init__(self, id):
         self.id = id
         self.failed = False
-        self.minProposal = 0
         self.acceptedProposal = None
         self.acceptedValue = None
 
@@ -61,8 +59,8 @@ class Acceptor():
         elif msg.mtype == "ACCEPT":
             if msg.n >= self.minProposal:
                 self.acceptedValue = msg.value
-                self.acceptedProposal = self.minProposal
-                msg = Message(self, msg.src, "ACCEPTED", value=msg.value, n=msg.n)
+                self.acceptedProposal = msg.n
+                msg = Message(self, msg.src, "ACCEPTED", value=self.acceptedValue, n=self.acceptedProposal)
                 GlobalVariables.network.add_msg(msg)
             else:
                 msg = Message(self, msg.src, "REJECTED", value=None, n=msg.n)
