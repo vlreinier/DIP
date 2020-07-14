@@ -14,16 +14,16 @@ class Proposer():
 
         if msg.mtype == "PROPOSE":
             self.proposed_value = msg.value
-            GlobalVariables.proposer_n += 1
-            for acceptor in GlobalVariables.acceptors: # always send prepare to all acceptors
-                msg = Message(self, acceptor, "PREPARE", value=None, n=GlobalVariables.proposer_n)
+            next_proposal_n = GlobalVariables.next_proposal_n()
+            for acceptor in GlobalVariables.acceptors:
+                msg = Message(self, acceptor, "PREPARE", value=None, n=next_proposal_n)
                 GlobalVariables.network.add_msg(msg)
 
         elif msg.mtype == "PROMISE":
-            if msg.value:
-                self.accepted_value = msg.prior[1]
-            msg = Message(self, msg.src, "ACCEPT", value=self.accepted_value, n=msg.n)
-            GlobalVariables.network.add_msg(msg)
+            if msg.src.acceptedValue != None:
+                for acceptor in GlobalVariables.acceptors:
+                    msg = Message(self, acceptor, "ACCEPT", value=self.proposed_value, n=msg.n)
+                    GlobalVariables.network.add_msg(msg)
 
         elif msg.mtype == "ACCEPTED":
             self.accepted += 1
@@ -33,9 +33,9 @@ class Proposer():
         elif msg.mtype == "REJECTED":
             self.rejected += 1
             if self.rejected > (GlobalVariables.n_acceptors // 2): # majority rejected 
-                GlobalVariables.proposer_n += 1
-                for acceptor in GlobalVariables.acceptors: # always send prepare to all acceptors
-                    msg = Message(self, acceptor, "PREPARE", value=None, n=GlobalVariables.proposer_n)
+                next_proposal_n = GlobalVariables.next_proposal_n()
+                for acceptor in GlobalVariables.acceptors:
+                    msg = Message(self, acceptor, "PREPARE", value=None, n=next_proposal_n)
                     GlobalVariables.network.add_msg(msg)
 
     def __str__(self):
@@ -46,20 +46,22 @@ class Acceptor():
     def __init__(self, id):
         self.id = id
         self.failed = False
-        self.min_n = 0
-        self.accepted_value = None
+        self.minProposal = 0
+        self.acceptedProposal = None
+        self.acceptedValue = None
 
     def deliver_msg(self, msg):
 
         if msg.mtype == "PREPARE":
-            if msg.n > self.min_n:
-                msg = Message(self, msg.src, "PROMISE", value=msg.value, n=msg.n)
+            if msg.n > self.minProposal:
+                self.minProposal = msg.n
+                msg = Message(self, msg.src, "PROMISE", value=self.acceptedValue, n=self.acceptedProposal)
                 GlobalVariables.network.add_msg(msg)
                 
         elif msg.mtype == "ACCEPT":
-            if msg.n > self.min_n:
-                self.min_n = msg.n
-                self.accepted_value = msg.value
+            if msg.n >= self.minProposal:
+                self.acceptedValue = msg.value
+                self.acceptedProposal = self.minProposal
                 msg = Message(self, msg.src, "ACCEPTED", value=msg.value, n=msg.n)
                 GlobalVariables.network.add_msg(msg)
             else:

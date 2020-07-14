@@ -3,7 +3,7 @@ from attributes import GlobalVariables
 
 class Message():
 
-    def __init__(self, src, dst, mtype, value=None, n=None):
+    def __init__(self, src, dst, mtype, value=None, n=None, prior=None):
 
         if not mtype in GlobalVariables.msg_types:
             print("Invalid msg type")
@@ -27,10 +27,8 @@ class Message():
             return f"{self.mtype} n={self.n} v={self.value}"
 
         elif self.mtype == "PROMISE":
-            if self.prior != None:
-                return f"{self.mtype} n={self.n} (Prior: n={self.prior[0]}, v={self.prior[1]})"
-            else:
-                return f"{self.mtype} n={self.n} (Prior: None)"
+            prior = f"n={self.n}, v={self.value}" if self.src.minProposal != 0 else "None"
+            return f"{self.mtype} n={self.src.minProposal} (Prior: {prior})"
                 
         else:
             print("Invalid msg type")
