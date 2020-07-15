@@ -30,5 +30,5 @@ train_y = daily_rentals_df['rented']
 rfc = RandomForestClassifier(n_estimators=150, criterion='entropy', random_state=0).fit(train_X, train_y)
 
 
-def PredictValue(value):
-    return rfc.predict(train_X.iloc[[value]])[0]
+def PredictValue(day):
+    return rfc.predict(train_X.iloc[[int(day) + 1]])[0]
