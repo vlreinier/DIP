@@ -33,6 +33,9 @@ class Message():
         elif self.mtype == "PREDICTED":
             return f"{self.mtype} v={self.value}"
 
+        elif self.mtype == "REJECTED":
+            return f"{self.mtype} n={self.n}"
+
         else:
             print("Invalid msg type")
             sys.exit(0)
