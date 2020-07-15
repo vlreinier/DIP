@@ -35,7 +35,7 @@ class Proposer():
             if self.accepted > (GlobalVariables.n_acceptors // 2):
                 self.hasConsensus = True
                 for learner in GlobalVariables.learners:
-                    msg = Message(self, learner, "SUCCES", value=msg.value, n=GlobalVariables.n)
+                    msg = Message(self, learner, "SUCCES", value=msg.value, n=msg.n)
                     GlobalVariables.network.add_msg(msg)
 
         # if majority rejected n, start over with a higher n

@@ -29,7 +29,8 @@ class Simulation():
                         print(f"{proposer} heeft geen consensus.")
                 sys.exit(0)
 
-            # get event data
+            # todo improve efficiency
+            # get event data if eventtick is 
             if event_incrementer < len(self.E):
                 t_event, F, R, pi_v, pi_c = self.E[event_incrementer]
 
@@ -46,7 +47,7 @@ class Simulation():
                     print(f"{tick}: ** {c} gerepareerd **")
                     c.failed = False
                 
-                # propose message to provided machine
+                # propose value trough a message to a provided machine
                 if pi_v != None and pi_c != None:
                     msg = Message(None, pi_c, "PROPOSE", value=pi_v, n=None)
                     msg.dst.deliver_msg(msg)
@@ -71,8 +72,12 @@ class Simulation():
 
             proposers = int(parsed_input[0][0])
             acceptors = int(parsed_input[0][1])
-            learners = int(parsed_input[0][2])
-            tickmax = int(parsed_input[0][3])
+            if len(parsed_input[0]) == 4:
+                learners = int(parsed_input[0][2])
+                tickmax = int(parsed_input[0][3])
+            else:
+                learners = 0
+                tickmax = int(parsed_input[0][2])
             events = parsed_input[1:-1] # except first and last
 
             return proposers, acceptors, learners, tickmax, events
