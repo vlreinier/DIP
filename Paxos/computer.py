@@ -1,6 +1,6 @@
 from message import Message
 from attributes import GlobalVariables
-from flickbike import PredictValue
+import flickbike
 
 class Proposer():
     
@@ -87,7 +87,7 @@ class Learner():
     def deliver_msg(self, msg):
 
         if msg.mtype == "SUCCES":
-            msg = Message(self, msg.src, "PREDICTED", value=PredictValue(msg.value), n=None)
+            msg = Message(self, msg.src, "PREDICTED", value=flickbike.PredictValue(msg.value), n=None)
             GlobalVariables.network.add_msg(msg)
 
     def __str__(self):

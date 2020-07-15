@@ -39,19 +39,19 @@ class Simulation():
 
                 # fail computers
                 for c in F:
-                    print(f"{tick}: ** {c} kapot **")
+                    print(f"{str(tick).zfill(3)}: ** {c} kapot **")
                     c.failed = True
 
                 # recover computers
                 for c in R:
-                    print(f"{tick}: ** {c} gerepareerd **")
+                    print(f"{str(tick).zfill(3)}: ** {c} gerepareerd **")
                     c.failed = False
                 
                 # propose value trough a message to a provided machine
                 if pi_v != None and pi_c != None:
                     msg = Message(None, pi_c, "PROPOSE", value=pi_v, n=None)
                     msg.dst.deliver_msg(msg)
-                    print(f"{tick}:  -> {pi_c} {msg}")
+                    print(f"{str(tick).zfill(3)}:    -> {pi_c} {msg}")
 
                 # get next event
                 event_incrementer += 1
@@ -60,9 +60,9 @@ class Simulation():
                 msg = GlobalVariables.network.get_msg()
                 if msg != None:
                     msg.dst.deliver_msg(msg)
-                    print(f"{tick}: {msg.src} -> {msg.dst} {msg}")
+                    print(f"{str(tick).zfill(3)}: {msg.src} -> {msg.dst} {msg}")
                 else:
-                    print(f"{tick}:")
+                    print(f"{str(tick).zfill(3)}:")
 
     def read_input(self, input):
         try:
