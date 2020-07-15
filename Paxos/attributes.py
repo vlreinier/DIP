@@ -4,7 +4,8 @@ class GlobalVariables():
     acceptors = []
     n_proposers = None
     n_acceptors = None
-    proposal_n = 0
+    n_learners = None
+    n = 0
     msg_types = ["PROPOSE",
             "PREPARE",
             "PROMISE",
@@ -13,8 +14,3 @@ class GlobalVariables():
             "REJECTED",
             "SUCCES",
             "PREDICTED"]
-
-    @staticmethod
-    def next_proposal_n():
-        GlobalVariables.proposal_n += 1
-        return GlobalVariables.proposal_n

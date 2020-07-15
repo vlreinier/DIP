@@ -1,5 +1,5 @@
 from network import Network
-from computer import Proposer, Acceptor
+from computer import Proposer, Acceptor, Learner
 from message import Message
 from attributes import GlobalVariables
 import sys
@@ -8,9 +8,10 @@ class Simulation():
 
     def __init__(self, input):
         GlobalVariables.network = Network()
-        GlobalVariables.n_proposers, GlobalVariables.n_acceptors, self.tickmax, events = self.read_input(input)
+        GlobalVariables.n_proposers, GlobalVariables.n_acceptors, GlobalVariables.n_learners, self.tickmax, events = self.read_input(input)
         GlobalVariables.proposers = [Proposer(i + 1) for i in range(GlobalVariables.n_proposers)]
         GlobalVariables.acceptors = [Acceptor(i + 1) for i in range(GlobalVariables.n_acceptors)]
+        GlobalVariables.learners = [Learner(i + 1) for i in range(GlobalVariables.n_learners)]
         self.E = self.parse_events(events)
 
     def run(self):
@@ -22,8 +23,8 @@ class Simulation():
             # simulation ended
             if len(GlobalVariables.network.queue) == 0 and (event_incrementer >= len(self.E)):
                 for proposer in GlobalVariables.proposers:
-                    if proposer.has_consensus:
-                        print(f"{proposer} heeft wel consensus (voorgesteld: {proposer.proposed_value}, geaccepteerd: {proposer.accepted_value})")
+                    if proposer.hasConsensus:
+                        print(f"{proposer} heeft wel consensus (voorgesteld: {proposer.proposedValue}, geaccepteerd: {proposer.acceptedValue})")
                     else:
                         print(f"{proposer} heeft geen consensus.")
                 sys.exit(0)
@@ -70,10 +71,11 @@ class Simulation():
 
             proposers = int(parsed_input[0][0])
             acceptors = int(parsed_input[0][1])
-            tickmax = int(parsed_input[0][2])
+            learners = int(parsed_input[0][2])
+            tickmax = int(parsed_input[0][3])
             events = parsed_input[1:-1] # except first and last
 
-            return proposers, acceptors, tickmax, events
+            return proposers, acceptors, learners, tickmax, events
 
         except:
             print("Input file could not be read")

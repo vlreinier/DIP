@@ -1,0 +1,4 @@
+def PredictValue():
+
+
+    return value

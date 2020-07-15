@@ -29,7 +29,10 @@ class Message():
         elif self.mtype == "PROMISE":
             prior = f"n={self.src.acceptedN}, v={self.src.acceptedValue}" if self.src.acceptedN != 0 else "None"
             return f"{self.mtype} n={self.n} (Prior: {prior})"
-                
+        
+        # elif self.mtype == "PREDICTED":
+        #     return f"{self.mtype} n={self.n} v={self.value}"
+
         else:
             print("Invalid msg type")
             sys.exit(0)
