@@ -14,19 +14,21 @@ class Proposer():
 
         if msg.mtype == "PROPOSE":
             self.proposed_value = msg.value
+            self.accepted_value = self.proposed_value
             next_proposal_n = GlobalVariables.next_proposal_n()
             for acceptor in GlobalVariables.acceptors:
-                msg = Message(self, acceptor, "PREPARE", value=None, n=next_proposal_n)
+                msg = Message(self, acceptor, "PREPARE", value=self.proposed_value, n=next_proposal_n)
                 GlobalVariables.network.add_msg(msg)
 
         elif msg.mtype == "PROMISE":
-            msg = Message(self, msg.src, "ACCEPT", value=self.proposed_value, n=msg.src.minProposal)
+            if msg.src.acceptedN != 0:
+                self.accepted_value = msg.src.acceptedValue
+            msg = Message(self, msg.src, "ACCEPT", value=self.accepted_value, n=msg.n)
             GlobalVariables.network.add_msg(msg)
 
         elif msg.mtype == "ACCEPTED":
             self.accepted += 1
             if self.accepted > (GlobalVariables.n_acceptors // 2): # majority accepted and consensus is true
-                self.accepted_value = self.proposed_value
                 self.has_consensus = True
 
         elif msg.mtype == "REJECTED":
@@ -45,22 +47,21 @@ class Acceptor():
     def __init__(self, id):
         self.id = id
         self.failed = False
-        self.acceptedProposal = None
+        self.acceptedN = 0
         self.acceptedValue = None
 
     def deliver_msg(self, msg):
 
         if msg.mtype == "PREPARE":
-            if msg.n > self.minProposal:
-                self.minProposal = msg.n
-                msg = Message(self, msg.src, "PROMISE", value=self.acceptedValue, n=self.acceptedProposal)
+            if self.acceptedN < msg.n:
+                msg = Message(self, msg.src, "PROMISE", value=msg.value, n=msg.n)
                 GlobalVariables.network.add_msg(msg)
                 
         elif msg.mtype == "ACCEPT":
-            if msg.n >= self.minProposal:
+            if self.acceptedN < msg.n:
                 self.acceptedValue = msg.value
-                self.acceptedProposal = msg.n
-                msg = Message(self, msg.src, "ACCEPTED", value=self.acceptedValue, n=self.acceptedProposal)
+                self.acceptedN = msg.n
+                msg = Message(self, msg.src, "ACCEPTED", value=self.acceptedValue, n=self.acceptedN)
                 GlobalVariables.network.add_msg(msg)
             else:
                 msg = Message(self, msg.src, "REJECTED", value=None, n=msg.n)
