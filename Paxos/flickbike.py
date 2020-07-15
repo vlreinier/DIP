@@ -46,5 +46,5 @@ for i in holidays:
     test_df["holiday"][test_df.index.isin(holidays[i])]=i
 
 
-def PredictValue(day):
+def predict_daily_rentals(day):
     return rfc.predict(test_df.iloc[[int(day) + 1]])[0]
