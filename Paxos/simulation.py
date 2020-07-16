@@ -24,9 +24,9 @@ class Simulation():
             if len(GlobalVariables.network.queue) == 0 and (event_incrementer >= len(self.E)):
                 for proposer in GlobalVariables.proposers:
                     if proposer.hasConsensus:
-                        print(f"{proposer} heeft wel consensus (voorgesteld: {proposer.proposedValue}, geaccepteerd: {proposer.acceptedValue})")
+                        print(f"\n{proposer} heeft wel consensus (voorgesteld: {proposer.proposedValue}, geaccepteerd: {proposer.acceptedValue})")
                     else:
-                        print(f"{proposer} heeft geen consensus.")
+                        print(f"\n{proposer} heeft geen consensus.")
                 sys.exit(0)
 
             # todo improve efficiency
