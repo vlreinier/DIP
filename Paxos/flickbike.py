@@ -29,22 +29,8 @@ train_y = daily_rentals_df['rented']
 
 rfc = RandomForestClassifier(n_estimators=150, criterion='entropy', random_state=0).fit(train_X, train_y)
 
-# test and verify dataset
-verify_df = pd.read_csv("test.csv", index_col=0)
-verify_df["date"] = pd.to_datetime(verify_df["date"], format="%Y-%m-%d %H:%M:%S")
-verify_df.head()
-
-# prepare test dataset
-test_df = pd.DataFrame(pd.to_datetime(verify_df["date"].dt.date.unique()), columns=['date'])
-test_df['weekday'] = pd.to_datetime(test_df['date']).dt.dayofweek
-test_df.set_index("date", inplace=True)
-test_df["vacation"]=0
-test_df["holiday"]=0
-for i in vacations:
-    test_df["vacation"][test_df.index.isin(vacations[i])]=i
-for i in holidays:
-    test_df["holiday"][test_df.index.isin(holidays[i])]=i
-
 
 def predict_daily_rentals(day):
-    return rfc.predict(test_df.iloc[[int(day) + 1]])[0]
+    #print(daily_rentals_df[daily_rentals_df['rented'] == 8])
+    test = daily_rentals_df.drop('rented', axis=1)
+    return rfc.predict(test.iloc[[int(day) + 1]])[0]

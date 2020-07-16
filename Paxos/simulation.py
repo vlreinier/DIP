@@ -1,5 +1,5 @@
 from network import Network
-from computer import Proposer, Acceptor, Learner
+from computer import Proposer, Acceptor, Learner, Initiator
 from message import Message
 from attributes import GlobalVariables
 import sys
@@ -51,7 +51,7 @@ class Simulation():
                 if pi_v != None and pi_c != None:
                     msg = Message(None, pi_c, "PROPOSE", value=pi_v, n=None)
                     msg.dst.deliver_msg(msg)
-                    print(f"{str(tick).zfill(3)}:    -> {pi_c} {msg}")
+                    print(f"{str(tick).zfill(3)}: {Initiator()} -> {pi_c} {msg}")
 
                 # get next event
                 event_incrementer += 1

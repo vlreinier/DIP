@@ -2,6 +2,16 @@ from message import Message
 from attributes import GlobalVariables
 import flickbike
 
+class Initiator():
+    def __init__(self):
+        self.failed = False
+
+    def deliver_msg(self, msg):
+        ...
+
+    def __str__(self):
+        return f"  "
+
 class Proposer():
     
     def __init__(self, id):
@@ -34,9 +44,12 @@ class Proposer():
             self.accepted += 1
             if self.accepted > (GlobalVariables.n_acceptors // 2):
                 self.hasConsensus = True
+            if self.hasConsensus:
                 for learner in GlobalVariables.learners:
                     msg = Message(self, learner, "SUCCES", value=msg.value, n=msg.n)
                     GlobalVariables.network.add_msg(msg)
+                self.hasConsensus = False
+                self.accepted = 0
 
         # if majority rejected n, start over with a higher n
         elif msg.mtype == "REJECTED":
@@ -87,8 +100,8 @@ class Learner():
     def deliver_msg(self, msg):
 
         if msg.mtype == "SUCCES":
-            msg = Message(self, msg.src, "PREDICTED", value=flickbike.predict_daily_rentals(msg.value), n=None)
+            msg = Message(self, Initiator(), "PREDICTED", value=flickbike.predict_daily_rentals(msg.value), n=None)
             GlobalVariables.network.add_msg(msg)
 
     def __str__(self):
-        return f"A{self.id}"
+        return f"L{self.id}"
